@@ -10,7 +10,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
-public class CarDaoImp implements CarDao{
+public class CarDaoImp implements CarDao {
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -33,13 +33,15 @@ public class CarDaoImp implements CarDao{
         try {
             Session session = sessionFactory.openSession();
             session.beginTransaction();
-            car = (Car) session
+            List<Car> carList = session
                     .createQuery("from Car car where car.model = :model and car.series = :series")
                     .setParameter("model", model)
                     .setParameter("series", series)
-                    .getSingleResult();
+                    .getResultList();
             session.getTransaction().commit();
+            car = carList.get(0);
         } catch (RuntimeException e) {
+            e.printStackTrace();
         }
         return car;
     }
